@@ -2,6 +2,8 @@
 
 cd "$(dirname "$0")"
 
+mkdir -p out
+
 # Unpack
 ./unpack.sh
 
