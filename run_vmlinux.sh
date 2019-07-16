@@ -6,7 +6,7 @@ SCRIPT_VERIFIER="./compare_kallsyms.py"
 
 for i in $(seq 0 $N)
 do
-	${SCRIPT_VMLINUX} vmlinux${i} -m > ./out/kallsyms${i}.txt &
+	${SCRIPT_VMLINUX} vmlinux${i} > ./out/kallsyms${i}.txt &
 	pids[${i}]=$!
 done
 
