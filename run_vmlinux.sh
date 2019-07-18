@@ -1,19 +1,26 @@
 #!/usr/bin/env bash
 
+. job_pool.sh
+
+CORES=`cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l`
 N=16
 SCRIPT_VMLINUX="../vmlinux.py"
 SCRIPT_VERIFIER="./compare_kallsyms.py"
 
+parsekernel() {
+	echo "Parsing kernel $1"
+	${SCRIPT_VMLINUX} -m vmlinux${1} > ./out/kallsyms${1}.txt
+}
+
+job_pool_init $CORES 0
+
 for i in $(seq 0 $N)
 do
-	${SCRIPT_VMLINUX} -m vmlinux${i} > ./out/kallsyms${i}.txt &
-	pids[${i}]=$!
+	job_pool_run parsekernel $i
 done
 
-# wait for all pids
-for pid in ${pids[*]}; do
-	wait $pid
-done
+job_pool_wait
+job_pool_shutdown
 
 for i in $(seq 0 $N)
 do
